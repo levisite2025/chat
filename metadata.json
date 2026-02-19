@@ -1,0 +1,7 @@
+{
+  "name": "BlueChat AI",
+  "description": "Uma aplicação de mensagens via Bluetooth com assistência de IA para sugestões inteligentes e tradução em tempo real.",
+  "requestFramePermissions": [
+    "bluetooth"
+  ]
+}
