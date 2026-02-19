@@ -3,38 +3,57 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
+    <meta name="description" content="Mensagens Bluetooth seguras com assistência de IA.">
+    
+    <!-- PWA primary info -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-title" content="BlueChat">
+    <link rel="manifest" href="/manifest.json">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2582/2582635.png">
-    <title>BlueChat AI</title>
+    
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2582/2582635.png">
+
+    <title>BlueChat AI | Bluetooth Messenger</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        :root {
+            --sat: env(safe-area-inset-top);
+            --sar: env(safe-area-inset-right);
+            --sab: env(safe-area-inset-bottom);
+            --sal: env(safe-area-inset-left);
+        }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0f172a;
-            overscroll-behavior-y: contain; /* Previne o "pull-to-refresh" no celular */
+            overscroll-behavior-y: none;
+            -webkit-tap-highlight-color: transparent;
         }
+
         .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
+
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
         }
-        /* Ajuste para dispositivos com notch */
-        header {
-            padding-top: env(safe-area-inset-top);
-        }
-        footer {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
+
+        /* Safe area spacing for mobile browsers */
+        .pb-safe { padding-bottom: var(--sab); }
+        .pt-safe { padding-top: var(--sat); }
     </style>
+
 <script type="importmap">
 {
   "imports": {
@@ -46,7 +65,7 @@
 }
 </script>
 </head>
-<body>
+<body class="antialiased">
     <div id="root"></div>
 </body>
 </html>

@@ -1,0 +1,6 @@
+
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://bluechat-ai.vercel.app/sitemap.xml
