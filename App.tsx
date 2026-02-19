@@ -24,6 +24,9 @@ const App: React.FC = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  
+  // Disconnect Confirmation State
+  const [isDisconnectModalOpen, setIsDisconnectModalOpen] = useState(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -115,6 +118,14 @@ const App: React.FC = () => {
       setError(err.message || "Erro ao conectar");
       setStatus(AppState.ERROR);
     }
+  };
+
+  const handleDisconnect = () => {
+    bluetoothService.disconnect();
+    setStatus(AppState.IDLE);
+    setIsDisconnectModalOpen(false);
+    setMessages([]);
+    setDeviceName('');
   };
 
   const handleSendMessage = async (textOverride?: string) => {
@@ -226,11 +237,11 @@ const App: React.FC = () => {
         </p>
       </div>
 
-      {/* Help Modal com Instruções de Instalação */}
+      {/* Help Modal */}
       {isHelpOpen && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setIsHelpOpen(false)}></div>
-          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-[2rem] shadow-2xl p-6 overflow-y-auto max-screen-h-[90vh] space-y-6">
+          <div className="relative w-full max-w-md bg-slate-900 border border-slate-800 rounded-[2rem] shadow-2xl p-6 overflow-y-auto max-h-[90vh] space-y-6">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-bold flex items-center space-x-2">
                 <i className="fa-solid fa-mobile-screen text-cyan-400"></i>
@@ -264,13 +275,6 @@ const App: React.FC = () => {
                   <li>Role para baixo e toque em <span className="text-white font-bold">"Adicionar à Tela de Início"</span>.</li>
                   <li>Toque em <span className="text-white font-bold">Adicionar</span> no topo da tela.</li>
                 </ol>
-              </div>
-
-              <div className="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/20">
-                <p className="text-xs text-blue-400 leading-relaxed">
-                  <i className="fa-solid fa-lightbulb mr-2"></i>
-                  <strong>Dica:</strong> Uma vez instalado, o app funcionará em tela cheia e será muito mais rápido de abrir!
-                </p>
               </div>
             </div>
 
@@ -313,9 +317,9 @@ const App: React.FC = () => {
                 <i className="fa-solid fa-address-book"></i>
               </button>
               <button 
-                onClick={() => { bluetoothService.disconnect(); setStatus(AppState.IDLE); }}
-                className="text-slate-400 hover:text-white p-2 transition-colors"
-                title="Sair"
+                onClick={() => setIsDisconnectModalOpen(true)}
+                className="text-slate-400 hover:text-red-500 p-2 transition-colors"
+                title="Desconectar"
               >
                 <i className="fa-solid fa-right-from-bracket"></i>
               </button>
@@ -405,6 +409,38 @@ const App: React.FC = () => {
             </div>
           </footer>
         </>
+      )}
+
+      {/* Disconnect Confirmation Modal */}
+      {isDisconnectModalOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsDisconnectModalOpen(false)}></div>
+          <div className="relative w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl p-6 space-y-6 text-center animate-bounce-in">
+            <div className="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center mx-auto">
+              <i className="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold">Desconectar?</h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                Você tem certeza que deseja encerrar a conexão com <span className="text-white font-semibold">{deviceName}</span>? O histórico de mensagens desta sessão será limpo.
+              </p>
+            </div>
+            <div className="flex space-x-3 pt-2">
+              <button 
+                onClick={() => setIsDisconnectModalOpen(false)}
+                className="flex-1 py-3 bg-slate-800 text-slate-300 rounded-xl font-semibold hover:bg-slate-700 transition-colors"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={handleDisconnect}
+                className="flex-1 py-3 bg-red-600 text-white rounded-xl font-semibold hover:bg-red-500 shadow-lg shadow-red-900/20 transition-colors"
+              >
+                Desconectar
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Contacts Side Drawer */}
@@ -530,8 +566,16 @@ const App: React.FC = () => {
           from { transform: translateX(100%); }
           to { transform: translateX(0); }
         }
+        @keyframes bounceIn {
+          0% { transform: scale(0.9); opacity: 0; }
+          70% { transform: scale(1.05); opacity: 1; }
+          100% { transform: scale(1); opacity: 1; }
+        }
         .animate-slide-in-right {
           animation: slideInRight 0.3s ease-out;
+        }
+        .animate-bounce-in {
+          animation: bounceIn 0.3s ease-out forwards;
         }
       `}</style>
     </div>
